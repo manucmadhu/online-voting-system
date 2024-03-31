@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+<script src="{% static 'scripts/base.js' %}"></script>
+<script src="{% static 'scripts/csrf.js' %}"></script>
+<script src="{% static 'scripts/home.js' %}"></script>
+{% endblock %}
+
+{% block main_content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.container {
+    width: 1280px; /* Typical laptop screen width */
+    height: 720px; /* Typical laptop screen height */
+    position: relative;
+    margin: auto;
+}
+.welcome-text {
+    width: 425px;
+    height: 70px;
+    left: 470px; /* Centering horizontally */
+    top: 37px;
+    position: absolute;
+    text-align: center;
+    color: black;
+    font-size: 64px;
+    font-family: Montserrat;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+.sub-text {
+    width: 425px;
+    height: 70px;
+    left: 470px; /* Centering horizontally */
+    top: 146px;
+    position: absolute;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+    font-family: Montserrat;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+.form-container {
+    width: 294px;
+    height: 179px;
+    left: 536px; /* Centering horizontally */
+    top: 360px;
+    position: absolute;
+}
+{% comment %} /* Button styling */
+.button {
+    width: 163px;
+    height: 30px;
+    position: absolute;
+    left: 50%; /* Center horizontally */
+    bottom: 20px; /* Adjust vertical position as needed */
+    transform: translateX(-50%); /* Center horizontally */
+    text-align: center;
+    color: white;
+    font-size: 15px;
+    font-family: Montserrat;
+    font-weight: 600;
+    background-color: #358D1F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    line-height: 30px; /* Vertical centering */
+}
+
+.button:hover {
+    background-color: #2e7823; /* Darken color on hover */
+}
+/* Button styling */
+.form-container .button {
+    width: 163px;
+    height: 30px;
+    position: absolute;
+    left: 50%; /* Center horizontally */
+    bottom: 20px; /* Adjust vertical position as needed */
+    transform: translateX(-50%); /* Center horizontally */
+    text-align: center;
+    color: white;
+    font-size: 15px;
+    font-family: Montserrat;
+    font-weight: 600;
+    background-color: #358D1F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    line-height: 30px; /* Vertical centering */
+}
+
+.form-container .button:hover {
+    background-color: #2e7823; /* Darken color on hover */
+} {% endcomment %}
+
+.image-container {
+    width: 662px; /* Width of the image */
+    height: 720px; /* Height of the container */
+    overflow: hidden; /* Hide overflow */
+    position: relative; /* Changed to relative */
+}
+
+.image-container img {
+    max-width: none; /* Allow the image to stretch */
+    max-height: none; /* Allow the image to stretch */
+    width: auto; /* Allow the image to stretch */
+    height: 100%; /* Make the image fill the container height */
+    position: absolute;
+    left: 50%; /* Center horizontally */
+    top: 50%; /* Center vertically */
+    transform: translate(-50%, -50%); /* Center the image */
+}
+</style>
+<div class="authentication" style="width: 1280px; height: 720px; position: relative; background: white">
+    <div class="Rectangle1" style="width: 345px; height: 467px; left: 810px; top: 201px; position: absolute; background: linear-gradient(180deg, #D9D9D9 0%, #737373 100%); box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 20px; border: 1px white solid"></div>
+    <div class="Welcome" style="width: 425px; height: 70px; left: 770px; top: 37px; position: absolute; text-align: center; color: black; font-size: 64px; font-family: Montserrat; font-weight: 400; word-wrap: break-word">WELCOME</div>
+    <div class="ToOnlineVotingSystem" style="width: 425px; height: 70px; left: 770px; top: 146px; position: absolute; text-align: center; color: black; font-size: 20px; font-family: Montserrat; font-weight: 400; word-wrap: break-word">TO ONLINE VOTING SYSTEM</div>
+    <div class="Group1" style="width: 294px; height: 179px; left: 836px; top: 360px; position: absolute">
+        {% comment %} <button type="submit" class="submit" onclick="submit_aadhar()";style="width: 294px; height: 51px; left: 0px; top: 128px; position: absolute; background: #358D1F; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 15px"> {% endcomment %}
+        {% comment %} <div class="Rectangle2" style="width: 294px; height: 51px; left: 0px; top: 128px; position: absolute; background: #358D1F; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 15px"></div> {% endcomment %}
+        {% comment %} <div class="Rectangle3" style="width: 294px; height: 51px; left: 0px; top: 34px; position: absolute; background: #D9D9D9; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 15px"> {% endcomment %}
+            {% comment %} </button> {% endcomment %}
+            <input type="text" placeholder="xxxx xxxx xxxx" class="input-text" id="aadhar" autocomplete="off"style="width: 294px; height: 51px; left: 0px; top: 34px; position: absolute; background: #D9D9D9; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 15px">
+
+      {% comment %} </div> {% endcomment %}
+
+      <div class="EnterYouUid" style="width: 238px; left: 21px; top: 0px; position: absolute; text-align: center; color: black; font-size: 15px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">ENTER YOU UID</div>
+      <div class="Login" style="width: 163px; height: 30px; left: 65px; top: 144px; position: absolute; text-align: center; color: white; font-size: 15px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">
+        <button type="submit" class="submit" onclick="submit_aadhar()";>Login</button>
+
+    </div>
+    </div>
+    <img class="VecteezyIndianVoterHandWithVotingSign53657931" style="width: 662px; height: 1126px; left: 0px; top: -44px; position: absolute" src="{% static 'images\vecteezy_indian-voter-hand-with-voting-sign_5365793.jpg' %}" />
+    {% comment %} <img class="voted-party-image" src="{% static 'images/logo.png' %}"> {% endcomment %}
+  </div>
+  {% endblock %}
