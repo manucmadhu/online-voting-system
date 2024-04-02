@@ -37,14 +37,14 @@ class VoteBackup(models.Model):
         ordering = ['-timestamp']
 
 class Block(models.Model):
-    uid =models.IntegerField()
+    id =models.IntegerField(primary_key=True)
     prev_hash = models.CharField(max_length=100, blank=True)
     merkle_hash = models.CharField(max_length=100, blank=True)
     this_hash = models.CharField(max_length=100, blank=True)
     nonce = models.IntegerField(null=True)
     timestamp = models.DateTimeField()
-    class Meta:
-        managed = False
+
+    
 
 class MiningInfo(models.Model):
     prev_hash = models.CharField(max_length=100, blank=True)

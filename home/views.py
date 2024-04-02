@@ -109,7 +109,13 @@ def get_parties(request):
 # ------------- Save vote in database ------------------------
 def create_vote(request):
 
-    uuid = int(Vote.objects.all().last().uuid)+1
+    obj = Vote.objects.all().last()
+    if obj is None:
+        luid = 0
+    else:
+     luid = int(obj.uuid)
+
+    uuid = luid+1
     global pvkey
     private_key=pvkey
     # private_key = request.POST.get('private-key')
@@ -124,20 +130,12 @@ def create_vote(request):
     
     status = verify_vote(private_key, public_key, ballot)
     context = {'success': status[0], 'status': status[1]}
-    # new_vote = Vote.objects.create(
-    #     uuid=uuid,
-    #     vote_party_id=selected_party_id,
-    #     timestamp=curr
-    # )
-    # new_vote_backup = VoteBackup.objects.create(
-    #     uuid=uuid,
-    #     vote_party_id=selected_party_id,
-    #     timestamp=curr
-    # )
+   
     if status[0]:
         try:
             Vote(uuid = uuid, vote_party_id = selected_party_id, timestamp = curr).save()
             VoteBackup(uuid = uuid, vote_party_id = selected_party_id, timestamp = curr).save()
+            # MiningInfo(prev_hash=MiningInfo)
             voter = Voters.objects.get(uuid = request.session['uuid'])
             voter.vote_done = 1
             voter.save()
@@ -243,7 +241,7 @@ def create_block():
 
         # Create the block
         curr_block_id += 1
-        Block(uid=curr_block_id, prev_hash=prev_hash, merkle_hash=merkle_h, this_hash=h, nonce=nonce, timestamp=timestamp).save()
+        Block(id=curr_block_id,prev_hash=prev_hash, merkle_hash=merkle_h, this_hash=h, nonce=nonce, timestamp=timestamp).save()
 
         result.append({
             'block_id': curr_block_id, 'prev_hash': prev_hash, 'merkle_hash': merkle_h, 'this_hash': h, 'nonce': nonce
@@ -271,7 +269,7 @@ def create_block():
     # Save current Mining info
     mining_info.prev_hash = prev_hash
     mining_info.last_block_id = str(curr_block_id)
-    mining_info.id = 0
+    # mining_info.id = 1
     mining_info.save()
 
     data = {
@@ -283,113 +281,6 @@ def create_block():
 
     return data
 
-# def dummy_data_input(to_do):
-
-#     ts_data['progress'] = True
-#     ts_data['status'] = 'Deleting current Data.'
-#     ts_data['completed'] = 0
-    
-#     PoliticalParty.objects.all().delete()
-#     Voters.objects.all().delete()
-#     Vote.objects.all().delete()
-#     Block.objects.all().delete()
-#     VoteBackup.objects.all().delete()
-#     MiningInfo.objects.all().delete()
-
-#     ts_data['completed'] = 100
-#     ts_data['status'] = 'Deleted current Data.'
-
-#     MiningInfo(prev_hash = '0'*64, last_block_id = '0').save()
-
-#     if True :
-
-#         parties = {
-#             'bjp': {
-#                 'party_id': 'bjp',
-#                 'party_name': 'Bhartiya Janta Party (BJP)',
-#                 # 'party_logo': 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Bharatiya_Janata_Party_logo.svg/180px-Bharatiya_Janata_Party_logo.svg.png',
-#                 'candidate_name': '',
-#                 'candidate_profile_pic': ''
-#                 },
-#             'congress': {
-#                 'party_id': 'congress',
-#                 'party_name': 'Indian National Congress',
-#                 # 'party_logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_the_Indian_National_Congress.svg/250px-Flag_of_the_Indian_National_Congress.svg.png',
-#                 'candidate_name': '',
-#                 'candidate_profile_pic': ''
-#                 },
-#             'bsp': {
-#                 'party_id': 'bsp',
-#                 'party_name': 'Bahujan Samaj Party',
-#                 # 'party_logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Elephant_Bahujan_Samaj_Party.svg/1200px-Elephant_Bahujan_Samaj_Party.svg.png',
-#                 'candidate_name': '',
-#                 'candidate_profile_pic': ''
-#             },
-#             'cpi': {
-#                 'party_id': 'cpi',
-#                 'party_name': 'Communist Party of India',
-#                 # 'party_logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/CPI-banner.svg/200px-CPI-banner.svg.png',
-#                 'candidate_name': '',
-#                 'candidate_profile_pic': ''
-#             },
-#             'nota': {
-#                 'party_id': 'nota',
-#                 'party_name': 'None of the above (NOTA)',
-#                 # 'party_logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/NOTA_Option_Logo.png/220px-NOTA_Option_Logo.png',
-#                 'candidate_name': '',
-#                 'candidate_profile_pic': ''
-#             }
-#         }
-
-#         ts_data['completed'] = 0
-#         ts_data['status'] = 'Creating parties.'
-
-#         # Create Parties
-#         for party in parties.values():
-#             party_id = party['party_id']
-#             party_name = party['party_name']
-#             party_logo = party.get('party_logo', '')  # Use get method to avoid KeyError if 'party_logo' is missing
-#             PoliticalParty(party_id=party_id, party_name=party_name, party_logo=party_logo).save()
-#             curr = list(parties.keys()).index(party_id) + 1
-#             ts_data['completed'] = round(curr * 100 / len(parties))
-
-
-#     if True:
-
-#         ts_data['completed'] = 0
-#         ts_data['status'] = 'Creating voters.'
-
-#         # Create Voters
-#         no_of_voters = 10
-#         for i in range(1, no_of_voters+1):
-#             # uuid = ''.join(random.choice(string.digits) for _ in range(12))
-#             uuid = i
-#             name = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase) for _ in range(12))
-#             dob = datetime.date(random.randint(1980, 2002), random.randint(1, 12), random.randint(1, 28))
-#             pincode = ''.join(random.choice(string.digits) for _ in range(6))
-#             region = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase) for _ in range(20))
-#             voter = Voters.create(uuid = uuid, name = name, dob = dob, pincode = pincode, region = region)
-#             ts_data['completed'] = round(i*100/no_of_voters)
-
-#     if True:
-
-#         ts_data['completed'] = 0
-#         ts_data['status'] = 'Creating votes.'
-
-#         # Create Votes
-#         party_ids = list(parties.keys())
-#         for i in range(1, no_of_voters+1):
-#             curr_time = timezone.now()
-#             party_id = party_ids[random.randint(0,len(party_ids)-1)]
-#             Vote.create(uuid = i, vote_party_id = party_id, timestamp = curr_time)
-#             VoteBackup.create(uuid = i, vote_party_id = party_id, timestamp = curr_time)
-#             voter = Voters.objects.get(uuid=i)
-#             voter.vote_done = 1
-#             voter.save()
-#             ts_data['completed'] = round(i*100/no_of_voters)
-
-#     ts_data['status'] = 'Finishing task.'
-#     ts_data['progress'] = False
 def dummy_data_input(to_do):
 
     ts_data['progress'] = True
@@ -481,6 +372,7 @@ def dummy_data_input(to_do):
         # Create Votes
         party_ids = list(parties.keys())
         for i in range(1, no_of_voters + 1):
+            
             curr_time = timezone.now()
             party_id = party_ids[random.randint(0, len(party_ids) - 1)]
             Vote.objects.create(uuid=i, vote_party_id=party_id, timestamp=curr_time)
@@ -502,9 +394,15 @@ def block_info(request):
         block = Block.objects.get(id=request.GET.get('id'))
         confirmed_by = (Block.objects.all().count() - block.id) + 1
 
-        votes = Vote.objects.filter(block_id=request.GET.get('id'))
+        votes = Vote.objects.all().filter(block_id=request.GET.get('id'))
         vote_hashes = [SHA3_256.new((f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}').encode('utf-8')).hexdigest() for vote in votes]
 
+        # non_sealed_votes = Vote.objects.all().filter(block_id=None).order_by('timestamp')
+        # non_sealed_votes_BACKUP = VoteBackup.objects.all().filter(block_id=None).order_by('timestamp')
+        # root = MerkleTools()
+        # root.add_leaf([f'{tx.uuid}|{tx.vote_party_id}|{tx.timestamp}' for tx in block_transactions], True)
+        # root.make_tree()
+        # merkle_h = root.get_merkle_root()
         root = MerkleTools()
         root.add_leaf([f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}' for vote in votes], True)
         root.make_tree()
@@ -546,28 +444,24 @@ def verify_block(request):
     context = {}
     for s_block in selected:
         block = Block.objects.get(id=s_block)
-        votes = Vote.objects.filter(block_id=s_block)
+        votes = Vote.objects.all().filter(block_id=s_block)
         vote_hashes = [SHA3_256.new((f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}').encode('utf-8')).hexdigest() for vote in votes]
 
         root = MerkleTools()
         root.add_leaf([f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}' for vote in votes], True)
         root.make_tree()
         merkle_hash = root.get_merkle_root()
+        # non_sealed_votes = Vote.objects.all().filter(block_id=None).order_by('timestamp')
+        # non_sealed_votes_BACKUP = VoteBackup.objects.all().filter(block_id=None).order_by('timestamp')
+        # root = MerkleTools()
+        # root.add_leaf([f'{tx.uuid}|{tx.vote_party_id}|{tx.timestamp}' for tx in block_transactions], True)
+        # root.make_tree()
+        # merkle_h = root.get_merkle_root()
         tampered = block.merkle_hash != merkle_hash
+        # tampered=False
         context[s_block] = tampered
 
     return JsonResponse(context)
 
 def track_server(request):
     return JsonResponse(ts_data)
-# views.py
-
-# import datetime
-# from django.shortcuts import render
-
-# # def vote_page(request):
-#     # Get the server's current time
-#     server_time = datetime.datetime.now()
-#     # Calculate the end time (e.g., 60 seconds from now)
-#     end_time = server_time + datetime.timedelta(seconds=60)
-#     return render(request, 'vote_page.html', {'end_time': end_time})

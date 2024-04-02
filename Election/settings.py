@@ -130,8 +130,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_ADDRESS = ''
-EMAIL_PASSWORD = ''
+EMAIL_ADDRESS = 'mmanu186@yahoo.com'
+EMAIL_PASSWORD = 'susvpmbldlieygit'
 TRANSACTIONS_PER_BLOCK = 1
 
 # PUZZLE

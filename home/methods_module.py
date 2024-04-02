@@ -21,22 +21,22 @@ def send_email_otp(email_to):
     msg = EmailMessage()
     msg['From'] = EMAIL_ADDRESS
     msg['To'] = email_to
-    msg['Subject'] = 'Don\'t reply, OTP for email verfication'
-    content = 'Verify your email id to get the private key to cast your priceless vote. '+ otp +' is your OTP for email verfication.\nThank you.'
+    msg['Subject'] = 'Don\'t reply, OTP for email verification'
+    content = 'Verify your email id to get the private key to cast your priceless vote. ' + otp + ' is your OTP for email verification.\nThank you.'
     msg.set_content(content)
     msg.add_alternative('''\
         <!DOCTYPE html>
         <html>
             <body>
                 Verify your email id to get the private key to cast your priceless vote.
-                <h2 style="display:inline;">'''+ otp +'''</h2> is your OTP for email verfication.<br>
+                <h2 style="display:inline;">'''+ otp +'''</h2> is your OTP for email verification.<br>
                 Thank you.
             </body>
         </html>
     ''', subtype='html')
 
     try:
-        smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        smtp = smtplib.SMTP_SSL('smtp.mail.yahoo.com', 465)  # Yahoo SMTP server and port
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
         return [True, otp]

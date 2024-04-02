@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/show-result.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<div class="show-result">
+    <div id="timer">Timer: <span id="countdown"></span></div>
+
+    <table class="vote-count">
+        <tr class="table-header">
+            <td>Sr. No.</td>
+            <td>Party Symbol</td>
+            <td>Party Name</td>
+            <td>Vote Count</td>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.sr }}</td>
+            <td><img style="width: 60px;" src="{{ result.party_symbol }}"></td>
+            <td>{{ result.party_name }}</td>
+            <td>{{ result.vote_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<script src="{% static 'scripts/base.js' %}"></script>
+<script>
+    var end_time = new Date('{{ end_time }}').getTime();
+
+    function updateCountdown() {
+        var now = new Date().getTime();
+        var distance = end_time - now;
+
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('countdown').innerText = seconds + ' seconds';
+
+        if (distance <= 0) {
+            clearInterval(timerInterval);
+            fetchResults();
+        }
+    }
+
+    var timerInterval = setInterval(updateCountdown, 1000);
+
+    function fetchResults() {
+        // Make an AJAX request to fetch results
+        // Example using jQuery AJAX
+        $.ajax({
+            url: '/get_results/',
+            success: function(data) {
+                $('.show-result').html(data);
+            }
+        });
+    }
+</script>
+{% endblock %}

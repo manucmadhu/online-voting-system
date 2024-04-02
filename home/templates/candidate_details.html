@@ -8,7 +8,8 @@
             <tr class="details-row">
                 <td class="des">UID:</td>
                 <td>{{ details.uuid }}</td>
-                <td rowspan="5" style="text-align: center;"><img class="candidate-photo" src = '{{ details.profile_pic }}'></td>
+                <td rowspan="5" style="text-align: center;"><img class="candidate-photo" src="{% static 'images/' %}{{ details.profile_pic }}"></td>
+
             </tr>
             <tr class="details-row">
                 <td class="des">Name:</td>
