@@ -18,8 +18,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mydatabase',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'USER': '', #addd your userid
+        'PASSWORD': '',#add ypur password
         'HOST': 'localhost',   # Or your MySQL server's IP address
         'PORT': '3306',        # MySQL default port
     }
@@ -130,8 +130,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_ADDRESS = 'mmanu186@yahoo.com'
-EMAIL_PASSWORD = 'susvpmbldlieygit'
+EMAIL_ADDRESS = ''#give mail id
+EMAIL_PASSWORD = ''#give password
 TRANSACTIONS_PER_BLOCK = 1
 
 # PUZZLE
