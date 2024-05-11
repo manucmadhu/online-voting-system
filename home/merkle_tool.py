@@ -24,6 +24,26 @@ class MerkleTools(object):
                 v = SHA3_256.new(v).hexdigest()
             v = bytearray.fromhex(v)
             self.leaves.append(v)
+    # from hashlib import sha3_256
+
+    # def add_leaf(self, values, do_hash=False):
+    #     self.is_ready = False
+    #   # check if single leaf
+    #     if not isinstance(values, (tuple, list)):
+    #       values = [values]
+    #     for v in values:
+    #         if do_hash:
+    #             v_hash = SHA3_256(v.encode('utf-8')).hexdigest()
+    #         else:
+    #             v_hash = v
+    #         try:
+    #             v_bytes = bytearray.fromhex(str(v_hash))
+    #             self.leaves.append(v_bytes)
+    #         except ValueError:
+    #             print(f"Error: Non-hexadecimal number found in '{v_hash}'")
+    #         # Handle the error here, such as logging or raising an exception
+
+
 
     def get_leaf(self, index):
         return self._to_hex(self.leaves[index])

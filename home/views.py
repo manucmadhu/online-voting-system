@@ -53,8 +53,8 @@ def authentication(request):
 def send_otp(request):
     email_input = request.GET.get('email-id')
 
-    # [success, result] = send_email_otp(email_input)
-    [success, result] = [True, '0']
+    [success, result] = send_email_otp(email_input)
+    # [success, result] = [True, '0']
 
     json = {'success': success}
     if success:
@@ -396,13 +396,6 @@ def block_info(request):
 
         votes = Vote.objects.all().filter(block_id=request.GET.get('id'))
         vote_hashes = [SHA3_256.new((f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}').encode('utf-8')).hexdigest() for vote in votes]
-
-        # non_sealed_votes = Vote.objects.all().filter(block_id=None).order_by('timestamp')
-        # non_sealed_votes_BACKUP = VoteBackup.objects.all().filter(block_id=None).order_by('timestamp')
-        # root = MerkleTools()
-        # root.add_leaf([f'{tx.uuid}|{tx.vote_party_id}|{tx.timestamp}' for tx in block_transactions], True)
-        # root.make_tree()
-        # merkle_h = root.get_merkle_root()
         root = MerkleTools()
         root.add_leaf([f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}' for vote in votes], True)
         root.make_tree()
@@ -439,29 +432,42 @@ def sync_block(request):
         print(e)
         return JsonResponse({'success': False})
 
+# def verify_block(request):
+#     selected = request.GET.getlist('selected[]')
+#     context = {}
+#     for s_block in selected:
+#         block = Block.objects.get(id=s_block)
+#         votes = Vote.objects.all().filter(block_id=s_block)
+#         vote_hashes = [SHA3_256.new((f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}').encode('utf-8')).hexdigest() for vote in votes]
+#         root = MerkleTools()
+#         root.add_leaf([f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}' for vote in votes], True)
+#         root.make_tree()
+#         merkle_hash = root.get_merkle_root()
+#         tampered = block.merkle_hash != merkle_hash
+#         # tampered=False
+#         context[s_block] = tampered
+
+#     return JsonResponse(context)
+
 def verify_block(request):
+   
     selected = request.GET.getlist('selected[]')
     context = {}
     for s_block in selected:
+        
+        try:
+            prev=Block.objects.get(id=str(int(s_block)-1)).this_hash
+        except Exception as e:
+            prev=Block.objects.get(id='1').prev_hash
         block = Block.objects.get(id=s_block)
-        votes = Vote.objects.all().filter(block_id=s_block)
-        vote_hashes = [SHA3_256.new((f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}').encode('utf-8')).hexdigest() for vote in votes]
-
-        root = MerkleTools()
-        root.add_leaf([f'{vote.uuid}|{vote.vote_party_id}|{vote.timestamp}' for vote in votes], True)
-        root.make_tree()
-        merkle_hash = root.get_merkle_root()
-        # non_sealed_votes = Vote.objects.all().filter(block_id=None).order_by('timestamp')
-        # non_sealed_votes_BACKUP = VoteBackup.objects.all().filter(block_id=None).order_by('timestamp')
-        # root = MerkleTools()
-        # root.add_leaf([f'{tx.uuid}|{tx.vote_party_id}|{tx.timestamp}' for tx in block_transactions], True)
-        # root.make_tree()
-        # merkle_h = root.get_merkle_root()
-        tampered = block.merkle_hash != merkle_hash
-        # tampered=False
+        tampered = block.prev_hash!=prev
+        context[s_block] = tampered
+        # prev=block.this_hash
         context[s_block] = tampered
 
     return JsonResponse(context)
+
+
 
 def track_server(request):
     return JsonResponse(ts_data)
